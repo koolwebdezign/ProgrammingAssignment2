@@ -14,15 +14,21 @@
 ## can cache its inverse.
 
 makeCacheMatrix <- function(x = matrix()) {
-    inv = NULL
-    set = function(y) {
+    inversematrix = NULL
+    setMatrix = function(y) {
         x <<- y
-        inv <<- NULL
+        inversematrix <<- NULL
     }
-    get = function() x
-    setinv = function(inverse) inv <<- inverse 
-    getinv = function() inv
-    list(set=set, get=get, setinv=setinv, getinv=getinv)
+    getMatrix = function() {
+        x
+    }
+    setInverse = function(inverse) {
+        inversematrix <<- inverse 
+    }
+    getInverse = function() {
+        inversematrix
+    }
+    list(setMatrix=setMatrix, getMatrix=getMatrix, setInverse=setInverse, getInverse=getInverse)
 }
 
 ## cacheSolve - This function computes the inverse of the special "matrix" 
@@ -32,20 +38,32 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
     # Check cache for the inverse matrix from the matrix input
-    inv = x$getinv()
+    inverse = x$getInverse() ## getinverse() defined in makeCacheMatrix()
     
-    if (!is.null(inv)){
+    if (!is.null(inverse)){
         # Return inverse from cache if available
-        return(inv)
+        return(inverse)
     } else {
         # Calculate the inverse
-        mat.data = x$get()
-        inv = solve(mat.data, ...)
+        matrixdata = x$getMatrix() ## getmatrix() defined in makeCacheMatrix()
+        inverse = solve(matrixdata, ...) ## http://www.endmemo.com/program/R/solve.php
         
         # Set the cache with the calculated inverse
-        x$setinv(inv)
+        x$setInverse(inverse)
         
-        return(inv)	    
+        return(inverse)	    
     }
     
 }
+
+## References:  Several sources were used in my efforts to research, create and test
+## this solution.  In practice, the internet is a valuable resource for finding
+## solutions and code strategies.  I successfully completed excessive testing
+## of this solution such that I was able to rename variables and to familiarize myself
+## with the scoping strategies of each of these functions.
+## http://masterr.org/r/how-to-cache-a-matrix-inversion-in-r/
+## https://stat.ethz.ch/R-manual/R-devel/library/base/html/Sys.getenv.html
+## https://stat.ethz.ch/R-manual/R-devel/library/base/html/Sys.setenv.html
+## http://www.endmemo.com/program/R/solve.php
+## https://www.mathsisfun.com/algebra/matrix-inverse.html
+
